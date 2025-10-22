@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoSpace</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+
+        /* ============================= */
+        /* 🌿 ESTILOS GERAIS DO SITE (COMPLETO) */
+        /* ============================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, "Poppins", sans-serif;
+        }
+        html, body {
+            height: 100%;
+            overflow: auto;
+            background-color: #064b2d;
+            color: white;
+        }
+        /* Container base: cada "página" ocupa a viewport e pode rolar internamente */
+        .container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+            overflow-y: auto;
+        }
+        .ativo {
+            opacity: 1;
+            pointer-events: all;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        button {
+            cursor: pointer;
+        }
+        /* ============================= */
+        /* 🟩 PÁGINA INICIAL */
+        /* ============================= */
+        #pagina-inicial {
+           background: linear-gradient(rgba(6, 75, 45, 0.75), rgba(15, 112, 62, 0.85)), 
+        url('https://images.unsplash.com/photo-1704244003192-252ede2bff44?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTkzfHx0ZXh0dXJhcyUyMHBhcmElMjBzaXRlc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=500');
+            background-size: cover;
+            background-position: center;
+        }
+        #pagina-inicial h1 {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        #pagina-inicial p {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+        #pagina-inicial button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            backdrop-filter: blur(6px);
+            transition: all 0.3s ease;
+        }
+        #pagina-inicial button:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+        /* ============================= */
+        /* 🧭 PÁGINA GEOLOGIA */
+        /* ============================= */
+        
+           #pagina-geologia {
+            /* Mantém os estilos de fundo (background) */
+            background: linear-gradient(rgba(6, 75, 45, 0.75), rgba(15, 112, 62, 0.85)), 
+            url('https://images.unsplash.com/photo-1704244003192-252ede2bff44?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTkzfHx0ZXh0dXJhcyUyMHBhcmElMjBzaXRlc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=500');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+
+            /* NOVAS REGRAS CHAVE: */
+            /* Altera o alinhamento para que o conteúdo comece do topo */
+            justify-content: flex-start !important; 
+            
+            /* Aumentado o padding-top para evitar que o título seja cortado */
+            padding-top: 100px !important; 
+            padding-bottom: 100px !important; 
+            /* O !important ajuda a garantir que estas regras prevaleçam */
+        }
+        
+        /* 🧱 Novo agrupamento para os 4 botões principais (2x2) */
+        .topicos-geologia {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+            gap: 20px;
+            max-width: 650px;
+            margin: 20px auto;
+            justify-items: center;
+            width: 100%;
+        }
+        /* ---------------------------------------------------- */
+        /* Estilo do card-topico na página geologia */
+        /* ---------------------------------------------------- */
+        #pagina-geologia .card-topico {
+            width: 100%;
+            max-width: 315px; /* Define max width para cada card */
+            height: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: #f6f6f6;
+            color: #064b2d;
+            border-radius: 16px;
+            padding: 15px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: left;
+            justify-content: flex-start;
+        }
+        #pagina-geologia .card-topico:hover {
+            transform: scale(1.03);
+            background-color: #e4e4e4;
+        }
+        /* ---------------------------------------------------- */
+        .botoes-secundarios {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 400px;
+            margin: 20px auto;
+            justify-items: center;
+        }
+        .botoes-secundarios button {
+            background-color: #2e8b57;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .botoes-secundarios button:hover {
+            background-color: #3cb371;
+        }
+        /* ============================= */
+        /* 🌎 MAPA INTERATIVO */
+        /* ============================= */
+        .mapa {
+            margin-top: 30px;
+            position: relative;
+            display: inline-block;
+        }
+        .mapa img {
+            /* CORREÇÃO: Estilo ajustado para suportar a nova imagem retangular */
+            width: 100%;
+            max-width: 450px; /* Definição de tamanho máximo */
+            height: auto;
+            border-radius: 10px; /* Alterado de 50% para não distorcer o mapa retangular */
+            opacity: 0.95;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: all 0.5s ease-in-out;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* 🔴 PONTOS DO MAPA (REMOVIDO A PEDIDO DO USUÁRIO) */
+        /* Os estilos da classe .ponto foram removidos para ocultar o ponto vermelho. */
+        .ponto {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            /* background-color: #ff4d4d; REMOVIDO */
+            border-radius: 50%;
+            /* box-shadow: 0 0 5px #ff4d4d; REMOVIDO */
+            z-index: 10;
+            cursor: pointer;
+            display: none; /* Mantemos o display none para controle via JS */
+            transition: background-color 0.3s;
+        }
+        .ponto:hover {
+            background-color: #ffffff;
+            box-shadow: 0 0 10px white;
+        }
+
+        /* ============================= */
+        /* 📜 ÁREA DE DEFINIÇÃO (NOVO) */
+        /* ============================= */
+        #definicao-objeto {
+            margin-top: 40px;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1); /* Fundo sutil transparente */
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: left;
+            display: none; /* Inicia oculto */
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        #definicao-objeto.mostrando {
+            opacity: 1;
+        }
+        #definicao-objeto h2 {
+            color: #a3ffaf; /* Verde claro para destaque */
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 5px;
+        }
+        #definicao-objeto p {
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        /* ============================= */
+        /* 🔸 PÁGINAS SECUNDÁRIAS */
+        /* ============================= */
+        #pagina-geologia, .pagina-secundaria {
+    background: linear-gradient(rgba(6, 75, 45, 0.75), rgba(15, 112, 62, 0.85)), 
+        url('https://images.unsplash.com/photo-1704244003192-252ede2bff44?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTkzfHx0ZXh0dXJhcyUyMHBhcmElMjBzaXRlc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=500');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+        /* ============================= */
+        /* 🧱 BOTÕES DE TÓPICOS GEOLÓGICOS (PÁGINA EXPLORAR) */
+        /* ============================= */
+        .topicos {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 40px;
+            width: 90%;
+            max-width: 400px;
+        }
+        /* ESTILO TERCIÁRIO (Padrão para explorar) */
+        .card-topico {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: #f6f6f6;
+            color: #064b2d;
+            border-radius: 16px;
+            padding: 15px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        /* Ajuste para card-topico que está na pagina-explorar */
+        #pagina-explorar .card-topico {
+            width: 100%;
+        }
+        .card-topico i {
+            font-size: 1.8em;
+        }
+        .card-topico:hover {
+            transform: scale(1.03);
+            background-color: #e4e4e4;
+        }
+        /* ============================= */
+        /* 🎨 ESTILO PADRÃO PARA PÁGINAS TERCIÁRIAS */
+        /* ============================= */
+        .pagina-terciaria {
+            /* Altera de column para row, mantendo o flex e adicionando alinhamento */
+    /* Altera de column para row, mantendo o flex e adicionando alinhamento */
+    display: flex;
+    flex-direction: column; /* Alterado para column para que o botão Voltar flua embaixo */
+    justify-content: flex-start;
+    align-items: center; /* Centraliza o conteúdo (texto/imagens/botão) */
+    padding: 30px 60px;
+    /* NOVO FUNDO (2ª Tentativa): Mármore Verde com Alto Contraste e gradiente de cor escura por cima */
+    background: linear-gradient(rgba(6, 75, 45, 0.75), rgba(15, 112, 62, 0.85)), 
+        url('https://images.unsplash.com/photo-1704244003192-252ede2bff44?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTkzfHx0ZXh0dXJhcyUyMHBhcmElMjBzaXRlc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=500');
+    background-size: cover;
+    background-attachment: fixed;
+    color: #fff;
+    overflow-y: auto;
+    min-height: auto;
+    box-sizing: border-box;
+    gap: 30px;
+        }
+        /* Novo Wrapper para o layout 2-colunas em páginas terciárias */
+        .terciaria-content-wrapper {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1200px; /* Largura máxima para o conteúdo de 2 colunas */
+            gap: 30px;
+        }
+        .texto-terciaria {
+            flex: 1;
+            max-width: 650px;
+            line-height: 1.7;
+            font-size: 1.05em;
+            text-align: left;
+            margin-top: 6px;
+        }
+        .imagens-terciaria {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+        imagens-terciaria abbr {
+    display: block; /* Trata a abreviação como um elemento de bloco */
+    width: 100%;    /* Faz ela ocupar 100% do espaço da div pai */
+}
+        .imagem-terciaria {
+            width: 100% !important; /* Força 100% da largura do elemento pai (agora a <abbr>) */
+    max-width: none !important; /* Remove qualquer limite máximo anterior */
+    height: auto !important; 
+    max-height: none !important; 
+    object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            display: block;
+        }
+        .imagem-terciaria:hover {
+            transform: scale(1.02);
+            transition: transform 0.25s ease;
+        }
+        /* 🟢 Estilo UNIFICADO para botões “Voltar” (abaixo do conteúdo) */
+        .btn-voltar-inferior {
+            /* Estilo visual */
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 14px 40px;
+            font-size: 1.05em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            /* Reposicionamento para ficar ABAIXO do conteúdo */
+            display: block;
+            width: fit-content;
+            margin: 40px auto 30px auto; /* 40px acima do botão, 30px abaixo da página, centralizado */
+        }
+        .btn-voltar-inferior:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        /* ------------------------------------- */
+        /* 🔎 ESTILOS DA PÁGINA DE BUSCA (PESQUISA) */
+        /* ------------------------------------- */
+        #pagina-simulacao-busca {
+            /* Fundo escuro e layout de topo para simular app de busca */
+            background: #121212;
+            justify-content: flex-start;
+            padding: 0;
+            padding-top: 0;
+            box-sizing: border-box;
+            align-items: center;
+            color: #e0e0e0;
+            height: 100vh;
+        }
+        .search-main-wrapper {
+            width: 100%;
+            max-width: 600px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        /* --- Barra de Busca (Topo) --- */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #1f1f1f;
+            border-bottom: 1px solid #333;
+            width: 100%;
+            flex-shrink: 0;
+        }
+        .search-bar .icon {
+            font-size: 24px;
+            padding: 0 10px;
+            color: #888;
+            text-decoration: none;
+        }
+        .search-bar .arrow-left {
+            font-weight: bold;
+        }
+        #simulacao-search-input {
+            flex-grow: 1;
+            background: none;
+            border: none;
+            color: #e0e0e0;
+            font-size: 18px;
+            padding: 5px 10px;
+            outline: none;
+        }
+        /* --- Lista de Sugestões e Botão Voltar (Scroll) --- */
+        .search-content {
+            flex-grow: 1;
+            width: 100%;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+        .suggestion-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #282828;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .suggestion-item:hover {
+            background-color: #282828;
+        }
+        .suggestion-item .icon {
+            font-size: 18px;
+            padding-right: 15px;
+        }
+        .suggestion-item .magnifying-glass {
+            color: #999;
+        }
+        .suggestion-item .query-text {
+            flex-grow: 1;
+            font-size: 16px;
+        }
+        .suggestion-item .arrow-right {
+            color: #4285f4;
+            transform: rotate(-45deg);
+        }
+        /* --- Área de Resultado --- */
+        .result-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            padding: 20px;
+            padding-top: 10px;
+            background-color: #121212;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            overflow-y: auto;
+            border-radius: 0;
+            z-index: 10;
+        }
+        .result-area h2 {
+            color: #4285f4;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-top: 10px;
+        }
+        #result-query {
+            font-style: italic;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+        #result-content {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        /* Estilo dos botões de voltar na área de resultado */
+        #back-search-button-top, #back-search-button-bottom {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            align-self: flex-start;
+            flex-shrink: 0;
+        }
+        #back-search-button-bottom {
+            margin-bottom: 40px;
+            margin-top: 30px;
+        }
+        .hidden {
+            display: none !important;
+        }
+        /* ============================= */
+        /* 🔒 ESTILOS DA TELA DE LOGIN CPF */
+        /* ============================= */
+
+        #cpf-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #064b2d; /* Mesma cor de fundo do site */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Garante que fique acima de todo o site */
+            transition: opacity 0.5s ease;
+        }
+
+        #cpf-overlay.hidden {
+            opacity: 0;
+            pointer-events: none; /* Permite o clique no conteúdo por baixo quando oculto */
+        }
+
+        .cpf-card {
+            background-color: #053a22; /* Cor mais escura para o cartão */
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .cpf-card h1 {
+            color: #55c58e; /* Cor verde/clara de destaque */
+            margin-bottom: 10px;
+        }
+
+        .cpf-card p {
+            margin-bottom: 25px;
+            color: #aaa;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #cpf-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 2px solid #55c58e;
+            border-radius: 6px;
+            background-color: #042e1c;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .primary-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            background-color: #55c58e;
+            color: #064b2d;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .primary-button:hover {
+            background-color: #43a174;
+        }
+
+        .error-message {
+            color: #ff6666;
+            font-size: 0.9em;
+            height: 20px;
+            margin-top: 10px;
+        }
+        /* ============================= */
+        /* 📱 RESPONSIVIDADE GERAL */
+        /* ============================= */
+        @media (max-width: 900px) {
+            .pagina-terciaria {
+                padding: 30px 20px;
+                text-align: center;
+                align-items: center;
+            }
+            .terciaria-content-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            .texto-terciaria {
+                width: 100%;
+                text-align: left;
+                max-width: 100%; /* Ajusta max-width */
+            }
+            .imagens-terciaria {
+                width: 100%;
+                align-items: center;
+            }
+            .imagem-terciaria {
+                max-width: 92%;
+                max-height: 320px;
+            }
+        }
+        @media (max-width: 600px) {
+            #pagina-inicial h1 {
+                font-size: 2.2em;
+            }
+            .mapa img {
+                width: 250px;
+            }
+            /* Correção para 1 coluna na página geologia em telas pequenas */
+            .topicos-geologia {
+                grid-template-columns: 1fr;
+                max-width: 300px;
+            }
+            #pagina-geologia .card-topico {
+                max-width: 300px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="cpf-overlay">
+        <div class="cpf-card">
+            <h1>GeoSpace - Acesso Restrito</h1>
+            <p>Por favor, insira seu CPF para continuar.</p>
+            
+            <div class="input-group">
+                <input type="text" id="cpf-input" placeholder="000.000.000-00" maxlength="14">
+                <button id="cpf-submit-button" class="primary-button">
+                    Entrar
+                </button>
+            </div>
+            
+            <p id="cpf-message" class="error-message"></p>
+        </div>
+    </div>
+
+    <div id="pagina-inicial" class="container ativo">
+        <h1>GeoSpace</h1>
+        <p>Geologia e observação da Terra com dados NASA</p>
+        <button id="botaoEntrar" class="botao-principal">CLIQUE PARA ENTRAR!</button>
+    </div>
+
+    <div id="pagina-geologia" class="container">
+        <h1>CONHEÇA MAIS SOBRE A GEOLOGIA</h1>
+
+        <div class="topicos-geologia"> 
+            
+            <div class="card-topico" onclick="irPara('pagina-explorar')">
+                <i class="bi bi-compass"></i> EXPLORAR
+            </div>
+            
+            <div class="card-topico" onclick="irPara('pagina-simulacao-busca')">
+                <i class="bi bi-search"></i> PESQUISA
+            </div>
+
+            <div class="card-topico" onclick="irPara('pagina-aster')">
+                <i class="bi bi-mortarboard"></i> ASTER
+            </div>
+            
+            <div class="card-topico" onclick="irPara('pagina-prevencao')">
+                <i data-feather="map-pin"></i> PREVENÇÃO DE DESASTRES
+            </div>
+            
+        </div>
+
+        <h2>ÁREAS QUE UM GEÓLOGO PODE ESTUDAR</h2>
+
+        <div class="botoes botoes-secundarios">
+            <button onclick="mostrarPontos('rochas')">ROCHAS</button>
+            <button onclick="mostrarPontos('vulcoes')">VULCÕES</button>
+            <button onclick="mostrarPontos('clima')">CLIMA</button>
+            <button onclick="mostrarPontos('falhas')">FALHAS</button>
+        </div>
+
+        <div class="mapa" id="mapa">
+            <img id="mapa-imagem" src="data:image/png;base64,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" alt="Mapa Mundial Básico">
+            <img id="mapa-complementar-imagem" src="" alt="Imagem: mapa climatico brasileiro" style="margin-top: 20px; max-width: 450px; display: none;">
+
+            <div class="ponto rochas" style="top: 40%; left: 30%;"></div>
+            <div class="ponto vulcoes" style="top: 75%; left: 55%;"></div>
+            <div class="ponto clima" style="top: 50%; left: 70%;"></div>
+            <div class="ponto falhas" style="top: 25%; left: 60%;"></div>
+        </div>
+        
+        <div id="definicao-objeto">
+            </div>
+
+    </div>
+
+    <div id="pagina-explorar" class="container pagina-secundaria">
+        <h1>Explorar</h1>
+        <p>Aqui você poderá visualizar os diferentes tipos geológicos presentes na Terra 🌎.</p>
+
+        <div class="topicos">
+            <div class="card-topico" onclick="irPara('pagina-terrasraras')">
+                <i data-feather="map-pin"></i> TERRAS RARAS
+            </div>
+            <div class="card-topico" onclick="irPara('pagina-tectonica')">
+                <i data-feather="alert-triangle"></i> INSTABILIDADE TECTÔNICA
+            </div>
+            <div class="card-topico" onclick="irPara('pagina-ouro')">
+                <i data-feather="dollar-sign"></i> OURO
+            </div>
+            <div class="card-topico" onclick="irPara('pagina-diamante')">
+                <i class="bi bi-gem"></i> DIAMANTE
+            </div>
+        </div>
+
+        <button class="btn-voltar-inferior" onclick="voltar()">Voltar</button>
+    </div>
+
+    <div id="pagina-pesquisa" class="container pagina-secundaria">
+        <h1>Pesquisa (Página Antiga)</h1>
+        <p>Esta é a página de pesquisa original, que agora é acessada pela simulação de busca.</p>
+        <button class="btn-voltar-inferior" onclick="voltar()">Voltar</button>
+    </div>
+
+    <div id="pagina-prevencao" class="container pagina-terciaria">
+        
+        <div class="terciaria-content-wrapper">
+            <div class="texto-terciaria">
+                <h1>Prevenção de Desastres</h1>
+    
+    <h2>O que é</h2>
+    <ul>
+        <li>Conjunto de ações planejadas e contínuas que buscam reduzir riscos e minimizar impactos de fenômenos naturais ou humanos.</li>
+        <li>Atua antes do desastre, antecipando perigos e fortalecendo comunidades.</li>
+        <li>Exemplos de desastres evitáveis:
+            <ul>
+                <li>Enchentes</li>
+                <li>Deslizamentos de terra</li>
+                <li>Secas</li>
+                <li>Queimadas</li>
+                <li>Tempestades intensas</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>Objetivos principais</h3>
+    <ul>
+        <li>Salvar vidas</li>
+        <li>Proteger o patrimônio público e privado</li>
+        <li>Promover sustentabilidade e segurança urbana</li>
+    </ul>
+    
+    <p>Com o crescimento urbano desordenado e as mudanças climáticas, o planejamento preventivo tornou-se urgente e estratégico.</p>
+
+    <h2>Planejamento e Monitoramento</h2>
+    <ul>
+        <li>Primeiro passo: planejamento e vigilância constantes.</li>
+        <li>É essencial mapear áreas de risco, como:
+            <ul>
+                <li>Encostas sujeitas a deslizamentos</li>
+                <li>Margens de rios propensas a inundações</li>
+                <li>Regiões expostas a ventos fortes ou incêndios</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>Ferramentas e ações</h3>
+    <ul>
+        <li>Sistemas de alerta com sirenes e mensagens de celular</li>
+        <li>Atuação da Defesa Civil em emergências</li>
+        <li>Monitoramento climático e hidrológico com estações meteorológicas e sensores</li>
+    </ul>
+    
+    <p>O objetivo é agir antecipadamente, evitando tragédias e reduzindo danos.</p>
+    
+    <h3>Educação e Treinamento</h3>
+    <ul>
+        <li>Campanhas educativas ensinam como agir antes, durante e depois de desastres.</li>
+        <li>Simulações e treinamentos em escolas, comunidades e empresas preparam a população.</li>
+    </ul>
+
+    <h3>Redução de Riscos (Ambiental)</h3>
+    <ul>
+        <li>Plantio de árvores e manutenção da vegetação nativa nas encostas.</li>
+        <li>Combate ao desmatamento e ao descarte inadequado de lixo.</li>
+        <li>Evita erosões, entupimentos de bueiros e transbordamento de rios.</li>
+    </ul>
+
+    <h2>Planos de Emergência</h2>
+    <p>Devem incluir:</p>
+    <ul>
+        <li>Rotas de fuga bem sinalizadas</li>
+        <li>Abrigos equipados e seguros</li>
+        <li>Protocolos de evacuação claros</li>
+    </ul>
+            </div>
+            <div class="imagens-terciaria">
+                <img class="imagem-terciaria" src="https://images.unsplash.com/photo-1746461122831-1c153ab5048c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cHJldmVuJUMzJUE3JUMzJUEzbyUyMGRlJTIwZGVzYXN0cmVzJTIwbmF0dXJhaXN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=500" alt="Imagem de análise de risco de desastre">
+                
+                <img class="imagem-terciaria" src="https://images.unsplash.com/photo-1485617359743-4dc5d2e53c89?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aW51bmRhJUMzJUE3JUMzJUI1ZXN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=500" alt="Imagem de análise de risco de desastre">
+
+                <img class="imagem-terciaria" src="https://images.unsplash.com/photo-1759773323780-cd3a3a10f600?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHByZXZlbiVDMyVBNyVDMyVBM28lMjBkZSUyMGRlc2FzdHJlc3xlbnwwfHx8MHx8fA%3D%3D&auto=format&fit=crop&q=60&w=500" alt="Imagem de análise de risco de desastre">
+            </div>
+        </div>
+        
+        <button class="btn-voltar-inferior" onclick="voltar()">Voltar</button>
+    </div>
+
+    <div id="pagina-aster" class="container pagina-terciaria">
+        
+        <div class="terciaria-content-wrapper">
+            <div class="texto-terciaria">
+               <h1>ASTER – Advanced Spaceborne Thermal Emission and Reflection Radiometer</h1>
+    
+    <h2>O que é</h2>
+    <ul>
+        <li>Instrumento de sensoriamento remoto desenvolvido em parceria entre a NASA (EUA) e o METI (Japão).</li>
+        <li>Lançado em dezembro de 1999 a bordo do satélite Terra, dentro do programa EOS (Earth Observing System).</li>
+        <li>Uma das câmeras mais avançadas já enviadas ao espaço para observar a superfície terrestre.</li>
+        <li>Capaz de capturar imagens de altíssima resolução em diferentes faixas do espectro eletromagnético.</li>
+    </ul>
+
+    <h2>Características Técnicas</h2>
+    <ul>
+        <li>Registra dados em 14 bandas espectrais, que vão da luz visível ao infravermelho térmico.</li>
+        <li>Permite analisar uma grande variedade de fenômenos naturais e humanos:
+            <ul>
+                <li>Temperatura da superfície</li>
+                <li>Tipos de vegetação</li>
+                <li>Rochas e solos</li>
+                <li>Atividade vulcânica</li>
+                <li>Urbanização e uso do solo</li>
+                <li>Recursos hídricos</li>
+            </ul>
+        </li>
+        <li>A partir desses dados, o ASTER gera Modelos Digitais de Elevação (DEM) — representações 3D do relevo terrestre com alta precisão.</li>
+    </ul>
+
+    <h3>Utilizado em estudos de:</h3>
+    <ul>
+        <li>Geologia, agricultura e uso da terra</li>
+        <li>Monitoramento climático e ambiental</li>
+        <li>Planejamento urbano</li>
+    </ul>
+
+    <h2>Importância Global</h2>
+    <ul>
+        <li>Oferece dados gratuitos e acessíveis para governos, universidades e pesquisadores de todo o mundo.</li>
+        <li>Contribui para o monitoramento de:
+            <ul>
+                <li>Mudanças climáticas</li>
+                <li>Desmatamento</li>
+                <li>Derretimento de geleiras</li>
+                <li>Impactos ambientais em larga escala</li>
+            </ul>
+        </li>
+        <li>Mesmo após mais de 20 anos em operação, o ASTER continua sendo:
+            <ul>
+                <li>Uma das principais fontes de imagens de alta resolução da Terra.</li>
+                <li>Um instrumento essencial para o estudo e a preservação sustentável do planeta.</li>
+            </ul>
+        </li>
+    </ul>
+            </div>
+            <div class="imagens-terciaria">
+                <img class="imagem-terciaria" src="data:image/jpeg;base64,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" alt="Visão do Monte Vesúvio por satélite ASTER">
+
+                <img class="imagem-terciaria" src="https://images.unsplash.com/photo-1636614484105-6b199a1fbdca?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fE5hc2F8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=500" alt="Imagem de Terras Raras">
+
+                <img class="imagem-terciaria" src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8TmFzYXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=500" alt="Imagem de Terras Raras">
+            </div>
+        </div>
+        
+        <button class="btn-voltar-inferior" onclick="voltar()">Voltar</button>
+    </div>
+    
+    <div id="pagina-terrasraras" class="container pagina-terciaria">
+        <div class="terciaria-content-wrapper">
+            <div class="texto-terciaria">
+                <h1>Terras Raras</h1>
+    
+    <h2>O que são</h2>
+    <ul>
+        <li>Grupo de 17 elementos químicos: 15 lantanídeos + ítrio + escândio</li>
+        <li>Propriedades químicas muito semelhantes</li>
+        <li>Não são raras, mas difíceis de encontrar em grandes concentrações</li>
+        <li>Extração e separação caras e complexas</li>
+    </ul>
+    
+    <h3>Riscos Ambientais</h3>
+    <p>Uso de produtos químicos e geração de resíduos tóxicos e radioativos.</p>
+
+    <h2>Importância e Aplicações</h2>
+    <ul>
+        <li>Fundamentais para a indústria moderna</li>
+        <li>Propriedades magnéticas, elétricas e ópticas únicas</li>
+        <li>Presentes em:
+            <ul>
+                <li>Ímãs de alto desempenho</li>
+                <li>Motores elétricos e turbinas eólicas</li>
+                <li>Veículos híbridos</li>
+                <li>Ressonâncias magnéticas</li>
+                <li>Baterias recarregáveis</li>
+                <li>Telas, computadores e smartphones</li>
+                <li>Fibras ópticas e lasers</li>
+                <li>Catalisadores e sensores</li>
+                <li>Equipamentos militares</li>
+            </ul>
+        </li>
+        <li>Essenciais para a revolução tecnológica e energética do século XXI</li>
+        <li>Indispensáveis na transição para uma economia limpa e sustentável</li>
+    </ul>
+
+    <h2>Distribuição Mundial</h2>
+    <ul>
+        <li>Produção concentrada em poucos países</li>
+        <li><strong>China:</strong> Maior produtora e processadora (região da Mongólia Interior)</li>
+        <li><strong>Brasil:</strong> Reservas em Minas Gerais, Goiás, Bahia e Amazonas. Potencial de crescimento com investimento em tecnologia e processamento.</li>
+        <li><strong>Austrália:</strong> Mina de Mount Weld (rica e moderna)</li>
+        <li><strong>EUA:</strong> Mina de Mountain Pass (reduz dependência da China)</li>
+        <li><strong>África:</strong> Madagascar, Tanzânia e África do Sul como novas fronteiras de exploração</li>
+    </ul>
+
+    <h2>ASTER e a Identificação de Terras Raras</h2>
+    <p>Utiliza as imagens do ASTER para criar combinações de bandas que destaquem as rochas-guia. Depois, é necessário ir ao campo para confirmar com coleta de amostras.</p>
+            </div>
+            <div class="imagens-terciaria">
+                <abbr title="Mapa-múndi das principais reservas de terras raras">
+                <img class="imagem-terciaria" 
+                    src="https://static.ndmais.com.br/2025/02/mapa-de-terras-raras-3-800x420.jpg" 
+                    alt="Imagem de Terras Raras">
+                </abbr>
+
+                <img class="imagem-terciaria" src="https://media.istockphoto.com/id/2191411284/pt/foto/neodymium-periodic-table-element-mining-science-nature-innovation-chemical-elements-used-in.webp?a=1&b=1&s=612x612&w=0&k=20&c=aCtRKOsA_g-OTWMyjH0lNPpeKJX7he2UsC9-7twtnbg=" alt="Imagem de Terras Raras">
+
+                <img class="imagem-terciaria" src="https://media.istockphoto.com/id/1247982737/pt/foto/the-mineral-bastn%C3%A4site-or-bastnaesite-is-one-of-a-family-of-three-carbonate-fluoride-minerals.webp?a=1&b=1&s=612x612&w=0&k=20&c=tBSqIhDrOfgf4enrzLDIzqtzGZuHmreQJy5lnEuUkIo=" alt="Imagem de Terras Raras">
+            </div>
+
+        </div>
+        <button class="btn-voltar-inferior" onclick="voltar()">Voltar</button>
+    </div>
+
+    <div id="pagina-tectonica" class="container pagina-terciaria">
+        <div class="terciaria-content-wrapper">
+            <div class="texto-terciaria">
+    <h1>Instabilidade Tectônica</h1>
+    
+    <h2>O que é</h2>
+    <ul>
+        <li>Fenômeno natural que ocorre em regiões com intensa movimentação das placas tectônicas.</li>
+        <li>As placas são grandes porções da crosta que se deslocam lentamente sobre o manto.</li>
+        <li>Essa movimentação gera forças internas poderosas, capazes de:
+            <ul>
+                <li>Deformar rochas</li>
+                <li>Originar falhas geológicas e dobramentos</li>
+                <li>Provocar terremotos e vulcões ativos</li>
+            </ul>
+        </li>
+        <li>O relevo dessas áreas é dinâmico e sujeito a mudanças bruscas ao longo do tempo.</li>
+        <li>Apesar dos riscos, esses processos também formam montanhas, vales e outras estruturas do relevo.</li>
+    </ul>
+
+    <h2>Como ocorre</h2>
+    <ul>
+        <li>Movida pelo calor interno da Terra, que cria correntes de convecção no manto.</li>
+        <li>As placas litosféricas se movem em diferentes direções:
+            <ul>
+                <li><strong>Convergentes:</strong> Colisão de placas, formando cordilheiras e vulcões (ex: subducção).</li>
+                <li><strong>Divergentes:</strong> Afastamento de placas, criando rift valleys e novas rochas.</li>
+                <li><strong>Transformantes:</strong> Atrito lateral, gerando fortes terremotos.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>Principais Regiões de Instabilidade</h2>
+    <ul>
+        <li><strong>Círculo de Fogo do Pacífico</strong>
+            <ul>
+                <li>Maior zona de instabilidade do planeta.</li>
+                <li>Abrange Japão, Indonésia, Chile, Filipinas e Nova Zelândia.</li>
+                <li>Caracteriza-se por vulcões ativos e terremotos frequentes.</li>
+            </ul>
+        </li>
+        <li><strong>Cordilheira dos Andes (América do Sul)</strong>
+            <ul>
+                <li>Formada pelo choque entre as placas de Nazca e Sul-Americana.</li>
+                <li>Uma das cadeias montanhosas mais extensas e elevadas do mundo.</li>
+            </ul>
+        </li>
+        <li><strong>Himalaia (Ásia)</strong>
+            <ul>
+                <li>Resultado da colisão das placas Indiana e Eurasiana.</li>
+                <li>O processo ainda está em curso, causando abalos sísmicos periódicos.</li>
+            </ul>
+        </li>
+        <li><strong>Europa (Itália e Islândia)</strong>
+            <ul>
+                <li>Localizadas em zonas de junção de placas.</li>
+                <li>Abrigam vulcões como o Vesúvio e o Etna (Itália).</li>
+                <li>A Islândia possui fissuras vulcânicas ativas.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>ASTER e a Identificação de Instabilidade Tectônica</h2>
+    <p>O ASTER permite reconhecer feições tectônicas e deformações da crosta terrestre, ajudando a mapear áreas suscetíveis a movimentos sísmicos, deslizamentos e erosões. Suas imagens, combinadas com observações de campo, são essenciais para prever riscos e compreender a dinâmica geológica de regiões instáveis.</p>
+</div>
+            <div class="imagens-terciaria">
+                <abbr title="Mapa-múndi das instabilidades tectônicas do planeta">
+                <img class="imagem-terciaria" 
+                    src="https://media.istockphoto.com/id/1146522618/pt/foto/tectonic-plates-move-constantly-making-new-areas-of-ocean-floor-building-mountains-causing.webp?a=1&b=1&s=612x612&w=0&k=20&c=dh8qE_Ck7LD9NtdYZJHS0prX_7XzNfgmXwILlq7Y6RI=" 
+                    alt="Imagem de Terras Raras">
+                </abbr>
+
+                <img class="imagem-terciaria" src="https://media.istockphoto.com/id/1130497005/pt/foto/types-of-plate-boundaries-convergent-boundaries-occur-where-two-plates-slide-toward-each-other.webp?a=1&b=1&s=612x612&w=0&k=20&c=nxo3vlUP6usWK8ifVE-CYrxaxVQSnHBd07_pFeiDzAc=" alt="Imagem de Placas Tectônicas">
+
+                <img class="imagem-terciaria" src="https://images.unsplash.com/photo-1677233860259-ce1a8e0f8498?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGVycmVtb3RvfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=500" alt="Imagem de Placas Tectônicas">
+            </div>
+        </div>
+        <button class="btn-voltar-inferior" onclick="voltar()">Voltar</button>
+    </div>
+
+    <div id="pagina-ouro" class="container pagina-terciaria">
+        <div class="terciaria-content-wrapper">
+            <div class="texto-terciaria">
+                <h1>Ouro</h1>
+    
+    <h2>Importância e Valor</h2>
+    <ul>
+        <li>Um dos metais mais valiosos e cobiçados da história da humanidade.</li>
+        <li>Utilizado em:
+            <ul>
+                <li>Joias e ornamentos</li>
+                <li>Reservas de valor (bancos centrais e instituições financeiras)</li>
+                <li>Componentes eletrônicos de alta precisão</li>
+            </ul>
+        </li>
+        <li>Características: Raridade, brilho característico, resistência à corrosão.</li>
+        <li>Símbolo de riqueza, poder e estabilidade econômica.</li>
+        <li>Usado desde civilizações antigas (egípcios, incas e romanos) até o sistema financeiro moderno.</li>
+        <li>Mantém valor universal e duradouro ao longo do tempo.</li>
+    </ul>
+
+    <h2>Formação Geológica</h2>
+    <p>Encontrado em diferentes tipos de depósitos, conforme os processos naturais:</p>
+    <ul>
+        <li><strong>Depósitos de veios de quartzo</strong>
+            <ul>
+                <li>Formado por precipitação de fluidos hidrotermais ricos em minerais.</li>
+                <li>O ouro se acumula em fraturas e cavidades das rochas.</li>
+            </ul>
+        </li>
+        <li><strong>Depósitos aluvionares</strong>
+            <ul>
+                <li>Resultam da erosão e transporte do ouro das rochas originais.</li>
+                <li>O metal, por ser denso, se deposita no fundo dos rios e cascalhos.</li>
+            </ul>
+        </li>
+        <li><strong>Depósitos associados a sulfetos</strong>
+            <ul>
+                <li>Ocorre junto a minerais como pirita e arsenopirita.</li>
+                <li>Formam jazidas auríferas de alto valor econômico.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>Distribuição Mundial</h2>
+    <p>Produção e reservas concentradas em alguns países:</p>
+    <ul>
+        <li><strong>Brasil</strong>
+            <ul>
+                <li>Importante produtor mundial.</li>
+                <li>Principais jazidas: Minas Gerais (Ouro Preto e Paracatu), Pará (Serra Pelada), Goiás e Bahia (mineração ativa).</li>
+            </ul>
+        </li>
+        <li><strong>África do Sul</strong>
+            <ul>
+                <li>Witwatersrand Basin: maior província aurífera do mundo.</li>
+                <li>Responsável por grande parte da produção global no século XX.</li>
+            </ul>
+        </li>
+        <li><strong>Austrália</strong>
+            <ul>
+                <li>Regiões de Kalgoorlie e Perth: polos modernos de extração.</li>
+            </ul>
+        </li>
+        <li><strong>China</strong>
+            <ul>
+                <li>Lidera a produção mundial atual.</li>
+                <li>Principais minas: província de Shandong.</li>
+            </ul>
+        </li>
+        <li><strong>Rússia</strong>
+            <ul>
+                <li>Jazidas na Sibéria Oriental, riquíssimas em minerais.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>ASTER e a Identificação de Ouro</h2>
+    <p>O ASTER identifica minerais e zonas de alteração hidrotermal associadas ao ouro, permitindo gerar mapas de potencial aurífero (representações espaciais que mostram as áreas mais favoráveis à ocorrência de ouro). Essa tecnologia ajuda geólogos a direcionar a prospecção, reduzindo custos e impactos ambientais nas etapas iniciais de pesquisa.</p>
+            </div>
+            <div class="imagens-terciaria">
+                <abbr title="Mapa-múndi das principais reservas e produções de ouro no planeta">
+                <img class="imagem-terciaria" 
+                    src="https://www.goldmarket.fr/wp-content/uploads/2024/09/ed8f3634thumbnail-1024x512.jpeg" 
+                    alt="Imagem de Terras Raras">
+                </abbr>
+
+                <img class="imagem-terciaria" src="https://images.unsplash.com/photo-1633484188188-3d985053a572?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHBlcGl0YXMlMjBkZSUyMG91cm98ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=500" alt="Imagem de Terras Raras">
+
+                <img class="imagem-terciaria" src="https://media.istockphoto.com/id/91818981/pt/foto/pepita-de-ouro.webp?a=1&b=1&s=612x612&w=0&k=20&c=GN-thTxfGfyfTGsNE1_0x95jYxY5-PBE2fXl70gY-_k=" alt="Imagem de Terras Raras">
+            </div>
+        </div>
+        <button class="btn-voltar-inferior" onclick="voltar()">Voltar</button>
+    </div>
+    
+    <div id="pagina-diamante" class="container pagina-terciaria">
+        <div class="terciaria-content-wrapper">
+            <div class="texto-terciaria">
+               <h1>Diamante</h1>
+    
+    <h2>O que é</h2>
+    <ul>
+        <li>Mineral formado apenas por átomos de carbono, organizados em estrutura cristalina extremamente compacta.</li>
+        <li>Resultado de altíssimas pressões e temperaturas no interior da Terra.</li>
+        <li>Propriedades únicas:
+            <ul>
+                <li>Dureza excepcional (mineral mais duro conhecido)</li>
+                <li>Brilho intenso e transparência elevada</li>
+                <li>Alta condutividade térmica</li>
+            </ul>
+        </li>
+        <li>Símbolo de riqueza, poder e eternidade desde a Antiguidade.</li>
+        <li>Usado em joias de luxo, coroas e objetos de adorno.</li>
+        <li>Também tem grande valor industrial, aplicado em:
+            <ul>
+                <li>Ferramentas de corte e perfuração</li>
+                <li>Polimento e abrasão de materiais duros</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>Formação Geológica</h2>
+    <ul>
+        <li>Forma-se a mais de 150 km de profundidade, no manto terrestre.</li>
+        <li>O calor e a pressão transformam o carbono em cristal.</li>
+        <li>Trazido à superfície por erupções vulcânicas antigas, formando:
+            <ul>
+                <li>Tubos de kimberlito</li>
+                <li>Tubos de lamproíto</li>
+            </ul>
+        </li>
+        <li>Com o tempo, a erosão das rochas libera diamantes que se acumulam em:
+            <ul>
+                <li>Depósitos aluvionares (areias e cascalhos de rios)</li>
+            </ul>
+        </li>
+        <li>Pode ser encontrado em minas profundas ou depósitos superficiais.</li>
+    </ul>
+
+    <h2>Distribuição Mundial</h2>
+    <p>Produzido em vários continentes, com destaque para:</p>
+    <ul>
+        <li><strong>Brasil</strong>
+            <ul>
+                <li>Jazidas em Minas Gerais, Mato Grosso, Pará e Bahia.</li>
+                <li>Importante produtor desde o período colonial.</li>
+            </ul>
+        </li>
+        <li><strong>África</strong>
+            <ul>
+                <li>Maior concentração de reservas do mundo.</li>
+                <li>Principais países produtores: Botswana, África do Sul, Angola, República Democrática do Congo.</li>
+                <li>Economias fortemente dependentes da mineração diamantífera.</li>
+            </ul>
+        </li>
+        <li><strong>Rússia</strong>
+            <ul>
+                <li>Região da Yakutia (Sibéria): minas modernas e altamente produtivas.</li>
+            </ul>
+        </li>
+        <li><strong>Canadá</strong>
+            <ul>
+                <li>Jazidas nos Territórios do Noroeste e em Nunavut.</li>
+                <li>Produção recente com alta tecnologia e cuidados ambientais.</li>
+            </ul>
+        </li>
+        <li><strong>Austrália</strong>
+            <ul>
+                <li>Mina de Argyle: famosa pelos raros diamantes rosados, entre os mais valiosos do mundo.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>ASTER e a Identificação de Diamante</h2>
+    <p>O ASTER é usado para identificar estruturas e rochas associadas a diamantes, como pipes kimberlíticos e zonas de alteração vulcânica. Suas imagens ajudam a delimitar alvos de prospecção, tornando a busca por diamantes mais eficiente e menos custosa.</p>
+            </div>
+            <div class="imagens-terciaria">
+                <abbr title="Mapa-múndi das principais reservas de diamantes no planeta">
+                <img class="imagem-terciaria" 
+                    src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhZwKGTyq1xzcgbTVzOa_6nNhiSWqIC9mAdWivC5vA_Mq9cmcAma640weE5xLoxkWGSoQCrvMePguO-Fw7YZ79GCRY0cSGQhCLVRW44JNBDf1oqG3m1chKCpkCX2mV7bYnhzv-Qcl9Rpys6/s1600/mapa_localiza%C3%A7%C3%A3o_minas_diamantes.gif" 
+                    alt="Imagem de Terras Raras">
+                </abbr>
+                <img class="imagem-terciaria" src="https://images.unsplash.com/photo-1600119612651-0db31b3a7baa?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGRpYW1lbnRlfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=500" alt="Imagem de um Diamante lapidado">
+
+                <img class="imagem-terciaria" src="https://images.unsplash.com/photo-1679531751641-79f78cbb5c0b?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGRpYW1lbnRlfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=500" alt="Imagem de um Diamante lapidado">
+            </div>
+        </div>
+        <button class="btn-voltar-inferior" onclick="voltar()">Voltar</button>
+    </div>
+
+
+    <div id="pagina-simulacao-busca" class="container">
+        
+        <div class="search-main-wrapper">
+            
+            <div class="search-bar">
+                <a href="#" class="icon arrow-left" onclick="voltar()"><i class="bi bi-arrow-left-short"></i></a> 
+                <input type="text" id="simulacao-search-input" placeholder="Pesquisar GeoSpace...">
+                <a href="#" class="icon"><i class="bi bi-mic-fill"></i></a>
+            </div>
+
+            <div id="search-interface" class="search-content">
+                <ul class="suggestion-list">
+                    <li class="suggestion-item" data-query="minerais">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">minerais</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="formacao de rochas">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">formacao de rochas</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="diamante">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">diamante</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="qual a geologia de minas gerais">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">qual a geologia de minas gerais</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="ciclo do ouro">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">ciclo do ouro</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="maiores desastres ambientais no brasil">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">maiores desastres ambientais no brasil</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="o que e subducção">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">o que e subducção</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="o que é geologia">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">o que é geologia</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="o que é geologia estuda">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">o que é geologia estuda</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="o que é geologia ambiental">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">o que é geologia ambiental</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="o que é geologia forense">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">o que é geologia forense</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="o que é geologia e geomorfologia">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">o que é geologia e geomorfologia</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="o que é geologia na geografia">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">o que é geologia na geografia</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="o que é geologia resumo">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">o que é geologia resumo</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    <li class="suggestion-item" data-query="o que é geologia estrutural">
+                        <span class="icon magnifying-glass"><i class="bi bi-search"></i></span>
+                        <span class="query-text">o que é geologia estrutural</span>
+                        <span class="icon arrow-right"><i class="bi bi-arrow-up-left"></i></span>
+                    </li>
+                    </ul>
+
+                <button class="btn-voltar-inferior" onclick="voltar()">Voltar</button>
+            </div>
+
+
+            <div id="result-area" class="result-area hidden">
+                <button id="back-search-button-top">← Voltar à Busca</button>
+                <h2>Resultado da Pesquisa</h2>
+                <p id="result-query"></p>
+                <p id="result-content"></p>
+                <button id="back-search-button-bottom">← Voltar à Busca</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // =============================
+        // 🔑 LÓGICA DE VALIDAÇÃO DE CPF (NOVO BLOCO)
+        // =============================
+        const cpfOverlay = document.getElementById('cpf-overlay');
+        const paginaInicial = document.getElementById('pagina-inicial'); // Referência à sua primeira div
+        const cpfInput = document.getElementById('cpf-input');
+        const cpfSubmitButton = document.getElementById('cpf-submit-button');
+        const cpfMessage = document.getElementById('cpf-message');
+        const definicaoTexto = document.getElementById('definicao-texto');
+        const clima2Imagem = document.getElementById('clima2-imagem');
+
+        // Função para formatar o CPF enquanto o usuário digita
+        function formatCPF(value) {
+            value = value.replace(/\D/g, ""); // Remove tudo que não for dígito
+            value = value.replace(/(\d{3})(\d)/, "$1.$2"); // Coloca ponto após o 3º dígito
+            value = value.replace(/(\d{3})(\d)/, "$1.$2"); // Coloca ponto após o 6º dígito
+            value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2"); // Coloca hífen após o 9º dígito
+            return value;
+        }
+
+        // Aplica a formatação no input
+        cpfInput.addEventListener('input', (e) => {
+            e.target.value = formatCPF(e.target.value);
+            cpfMessage.textContent = ''; // Limpa a mensagem de erro ao digitar
+        });
+
+        // Função principal de validação
+        function validarAcesso() {
+            const cpfDigitado = cpfInput.value.replace(/[^0-9]/g, ''); // Pega só os números
+            
+            if (cpfDigitado.length === 11) {
+                // SUCESSO:
+                cpfMessage.textContent = 'Acesso liberado!';
+                
+                // 1. OCULTA a tela de login
+                cpfOverlay.classList.add('hidden');
+
+                // 2. ATIVA a página inicial (adiciona a classe 'ativo' que você usa)
+                paginaInicial.classList.add('ativo'); 
+
+                // Opcional: Remover o overlay do DOM após um tempo para limpar a memória
+                setTimeout(() => {
+                    cpfOverlay.style.display = 'none';
+                }, 500);
+                
+            } else {
+                // FALHA: Exibe mensagem de erro
+                cpfMessage.textContent = 'CPF inválido ou incompleto. Verifique e tente novamente.';
+            }
+        }
+
+        // Adiciona o listener para o botão de Entrar
+        cpfSubmitButton.addEventListener('click', validarAcesso);
+
+        // Adiciona o listener para a tecla Enter
+        cpfInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                validarAcesso();
+            }
+        });
+        /* ============================= */
+        /* ⚙️ LÓGICA DO APP (COMPLETO) */
+        /* ============================= */
+
+        // Variável global para armazenar a página atual
+        let paginaAtual = 'pagina-inicial';
+
+        // Mapeamento de histórico para o botão "Voltar"
+        let historicoNavegacao = ['pagina-inicial'];
+
+        /**
+         * Função para mudar de página.
+         * Adiciona a nova página ao histórico de navegação.
+         */
+        function irPara(idPagina) {
+            // Se a página de destino for a mesma, ignora
+            if (idPagina === paginaAtual) return;
+            
+            // Oculta a página atual
+            const paginaAtualElement = document.getElementById(paginaAtual);
+            if (paginaAtualElement) {
+                paginaAtualElement.classList.remove('ativo');
+            }
+
+            // Exibe a nova página
+            const novaPaginaElement = document.getElementById(idPagina);
+            if (novaPaginaElement) {
+                novaPaginaElement.classList.add('ativo');
+            }
+
+            // Atualiza o estado e histórico
+            paginaAtual = idPagina;
+            
+            // Só adiciona ao histórico se não for a mesma página que a última
+            if (historicoNavegacao[historicoNavegacao.length - 1] !== idPagina) {
+                historicoNavegacao.push(idPagina);
+            }
+            
+            // Força o scroll da nova página para o topo, especialmente terciárias
+            if (novaPaginaElement) {
+                novaPaginaElement.scrollTo({ top: 0, behavior: 'instant' });
+            }
+        }
+
+        /**
+         * Função para voltar para a página anterior.
+         */
+        function voltar() {
+            // 1. Tratamento especial para a simulação de busca: Se estiver vendo resultados, volte para a lista de sugestões.
+            const searchPage = document.getElementById('pagina-simulacao-busca');
+            const resultArea = document.getElementById('result-area');
+            
+            // Se estiver na página de busca E o resultado estiver ativo (não escondido)
+            if (searchPage && searchPage.classList.contains('ativo') && resultArea && !resultArea.classList.contains('hidden')) {
+                 // Chama a função interna para voltar do resultado para a interface de sugestões
+                voltarParaBusca();
+                // Não executa a lógica de histórico de navegação do GeoSpace
+                return;
+            }
+            
+            // 2. Lógica de navegação principal (Histórico)
+            
+            // Remove a página atual do histórico (pois ela é a última)
+            if (historicoNavegacao.length > 1) {
+                historicoNavegacao.pop(); 
+            } else {
+                // Se só sobrou a página inicial, fica nela.
+                return;
+            }
+
+            // A página anterior é a penúltima no histórico
+            const paginaAnteriorId = historicoNavegacao[historicoNavegacao.length - 1];
+
+            // Oculta a página atual (a que está sendo exibida)
+            const paginaAtualElement = document.getElementById(paginaAtual);
+            if (paginaAtualElement) {
+                paginaAtualElement.classList.remove('ativo');
+            }
+
+            // Exibe a página anterior
+            const paginaAnteriorElement = document.getElementById(paginaAnteriorId);
+            if (paginaAnteriorElement) {
+                paginaAnteriorElement.classList.add('ativo');
+            }
+
+            // Atualiza o estado
+            paginaAtual = paginaAnteriorId;
+
+            // Força o scroll para o topo
+            if (paginaAnteriorElement) {
+                paginaAnteriorElement.scrollTo({ top: 0, behavior: 'instant' });
+            }
+        }
+
+        // ===================================
+        // 1. EVENTOS GERAIS DE NAVEGAÇÃO
+        // ===================================
+
+        // Inicial: Entrar no GeoSpace
+        document.getElementById('botaoEntrar').addEventListener('click', () => {
+            irPara('pagina-geologia');
+        });
+
+        // ===================================
+        // 2. LÓGICA DO MAPA (VULCÕES/ROCHAS/ETC) - CORRIGIDA
+        // ===================================
+
+        const pontos = document.querySelectorAll('.ponto');
+        const definicaoDiv = document.getElementById('definicao-objeto');
+        const mapaImagem = document.getElementById('mapa-imagem'); // NOVO: Referência à tag <img>
+        const novaImagem = document.getElementById('mapa-complementar-imagem');
+        
+        // NOVO: Mapeamento de URLs de imagens para cada tema
+        const imagensMapa = {
+            'rochas': 'https://static.mundoeducacao.uol.com.br/mundoeducacao/conteudo/estrutura-geologica-da-terra.jpg',
+            'vulcoes': 'data:image/jpeg;base64,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',
+            'clima': 'https://sustentabilidadenoar.com.br/wp-content/uploads/2019/11/climas-no-mundo.png',
+            'falhas': 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTEhMVFRUWFxgbGBgYGBkYHhcaGhoXGBgaGhgYHSggGRonGxgdITEhJSkrLi4uGh8zODMtOCgtLisBCgoKDg0OGxAQGy0lHyYvNS0tNTUtLTItLS0tLS0tLy8vLTUtLTU1LTItNS0tLS0vLS8tLy8yLystNS0tLS0tLf/AABEIAKUBMQMBIgACEQEDEQH/xAAbAAACAgMBAAAAAAAAAAAAAAAABQQGAQIDB//EAEEQAAIBAgQDBQUFBgUEAwEAAAECEQADBBIhMQVBUQYTImFxMkKBkaEUI1Kx8GJygsHR0kNTkqLhByQzshVj8ZP/xAAbAQACAwEBAQAAAAAAAAAAAAAABQMEBgIBB//EADQRAAEDAgQDBgYBBAMAAAAAAAEAAgMEEQUSITETQVEicYGRsdEyYaHB4fAUFUJS8QYzcv/aAAwDAQACEQMRAD8A9xooooQiiiihCKKKKEIorDsAJJgdTSnG8etrItxcfkmYCSdtdYH7REedehpOy5e9rBdxTHFZ8vgiZXfpmGb45Z/5qDwr7UT9/kAAGiga6GdQdOVVXjeP4iRLPaw6nYK6An+Ikk/CKqD4+7Ot66fR2/OamEBSyfFWRG2U+Oi9a4gcTm+6ylOegnbXVjE8xpExMCTUmLvdHVTdymDELm1gROw23ry2xbx7LmBuqv4nbIPgbhGb4TU/D8Oxp3xKrImWuMQB6hSOfWueHbchdx4g5/wxO8lesKcSbnjhbeu4Uk6mBo2mmvloNTJrPFmxMr9nCkQ2bNHlliee/wCoqmrgb4AJxh1jQIDueRJj5a6VJsYW5qWv3CAY0Ca7cihj58q4cGtFy4fVWmTSO3jI8W+6vFoEDxGT1iPpS3hv2ot98UAEzlG+8AayNT8gvMtCnDYVjGS65B5sLU/6TaP51O+yNEZlnrkX+QH0io3kgdkXUzSTuLJjxM3so7kAtOsxtB6n5eccprrgw+Qd4QXjWBAB6DrHWlL4Q8is/u/81GsYV7mbK6rBjNlkEjeBA0+NQ8Sb/D6hShrTzTq333etJAtCMump011nTxeXTzrbiBuZPuQC8iJ231ny9Neleb8UfG2Hb7ReIthtLmHS37ETLJdVjI2OQtTbBYTvBK4nE3OchbY0POAo+UT5VGKpxNg257wpXQWbmJ07irlw8XMv3pGYnaAIGwBgkE8zGmtRW+1G8QMgtToYBIGUbidfF+flJV2+zoPtXr/+sj/1rW72dAByteY8pxV5fnExUokkP9h8x7qLK3qrDxE3O7buQDc92dtx8tJrTh3fQTeKzyAG28mZ1B5c4AnUmkKcCXY37yHp3xf/ANxrWz9n2jTFXx//ABP52jRnl/w+oRlb1TLHtigT3QUiTl0ERCQDLTObNqOXLWROuC4E8JBfTUiAdddJ00/XKqoeHXV3xVwHXR0w5239hFY/ChbWLTX/ALe8J2ANlvQK+YMfkDUTqiRu8ZXQjB/uT/hv2mfvioA6AeLfofD156ZfOs8ROJzfchSunSfezbmOhHnAOkkJcPj1dgt209hzoBcAQE8gjgm27fsgk1KvYA7ZsvowB/I1yKx52jd+/vJclluae4QPkHeEF+cCAPIa8tpotYu2xhXRieQYHlPI9KTYa1iEEC411elwq31AB+ZNdeF2bdn/AA3QmJPicc/ejSSSSdqssmDtLEd4IXGqdUVhWBEgyOorNSoRRRRQhFFFFCEUUUUIRRRRQhFFFFCEUUVq7gAkmANyeVCFtUPFY8LIXVhv0H9T5DymJmo9vH96xVZCj4F+vmB9fTnyx+JRE1e2mXWTELG/OF0O/nyrlj2vF2m6F1N0SCSXadND4eWwHh3336muONwVu6QXtozDYkajWfaBmJpXc46D/wCNGY/iy6HzFxyAy+YzHoDUJOPXVZAxRpY5lVDAXK2veFtSGyj2RIOw3HIqWB+UO1XRgLm3LbhSMd2Qs3CWzXATMw255SXDGscK7JWrRDN9406BtQPMCACfWRVin9fo1o7hQWZlUDcnQD4k9an4juqpiip82bILrhcR80kFhoN48ySdDHLY9Irk1phplyg8w3sjnsPMxAqW99QJLqB1JA3MDn10otZWMkgkEgcxIMGNYJkR1muFaUG3ZnaIXeTAMA659iCY26cxvh1IVZmCdV3OmmZCI120Pw13mi0pMjb0I111308uUGuLKRGgzZWiJ3HSdAYLAR5/COVrSwhwuF0DqopuNlyg+LOoXnB1M6nQaGetNWcD9fyFJxa8QZTBG8D8wTof60s43x/uvCsvccwANMxg6amAoEnpudzqppa5jIQwAlw5flTiB8j9Ez41xNVU+Ig8gNCTygg1XuFY3FYlyBc+y2VZhARcxCkqSS4I36AkxqQZAzw7s22IcXMVDk6hCZRdpgR4v3iJ6RMVcMPwq3aSAAAogAAKI6DXSus8tSLAA/Rv3up3cKEW3KrVvs+10lXxN919VQfO2qn6054ZwsYYqloAgLGpMINI8ydNqn4Z+8tkpCZl8Om0jQn5/Q1xt3B4kWMykSOZOkltddtzvVmnoRHYvNz5DyUElS5wsNlJS825Kt1hSPP8R5Vv9rHIEny+Ma9NK4pm1jLlB00mevPSDIrDYu2CwLoCgLPqBlA3ZtdB5mmF1WWbCFNgIJ1k667meeuvLcnnWuIVzGrak6AmIkHUxp0/LnW32pJIzpImRI93VufIb1oMbbETcTUwJYakgEDfeCPnXiF1sW8o05yY0566xpPpW7oGEHUVxOMtwG7xIMwZEGCAYM6wSBWrY62DrcTfqN9T16KflQhdb2HVlKtqCIIJJBHQidaXng+URZuvb6K0XEHTwtqoHIIy1PtYlW9l0bSdCDpMTodpEVlrusDUjoCemhI0B1BjeDO1CFCTFXLely28fitDvVPqgXvAx6AMNB4uVTcNjhcGa2yONdjzBgjyIIIIIkEQYrAvdVYfCeRJHgJ2j6iJmlXEbaLeS/4QIZbpXRthkZ4MsqDP5qGLaANRdCcy0yIX0nX94bH13qTZxgkK8Kx210Pp/T86gCwxGlw5SJXLBkQsQSJOx1ze8T0iDxHHd0JvZO60lthqcuuYwfEVEAgmTArxzsouV6ASbBWeiq2OJXsrIIJZfu3ALRpoY1LL56kdDtTThVu9Ba7cDyfCFjLHIghQZ8pOkb71xHK2QXavEwoooqRCKKKKEIooooQiiiihC1uOACSYA3NVjiuPdz4biInJShZj5znA+EGPWlfaztKWumxaPhQ+I9XHL0X8/Sl2HsK5DXW8QiCTqNQZA+FLa2V47LTYc9L3/ChZUsLy1utvJObVrN4Wu3GB90MLY00OtoKx3jVjUh8HZTxC3bDj3iAWHP2j4vrSDDFCrL3DyQumdgGJfXUgERJY+p5a1IxdhruYmy7HeJbxEgKw1AEASNSJG08k8jXuNnONvC3ldX4i35Lrjr2+tV3hmMe5jra2xmUrdtuYmJXNIPUNbUT+3FOcRwNlzZHUBjJlWJ682316UdgeGC1dxIYhrnhIIBUKjl8wVTMEsozQdTlJ31uYc1hk7JTCeQCAi26stzF3wwAsSNNQw/CpP+4lZ+PWuL3bzqi3bClWZM67xDOesEeBDrp49djTiinyTKtXrVzNK4Vp8QDG60hfEygBWkcvCNpYesrDG6gyCwVXPMqxJj8QDHcxMdSSepdc6j4/GraUsxgAEknYAR89SAANyYoAvoF4SALlQTxG+oGbDQBGYh1gAAZiJOvvR10qXdcsuZVzwfdjUgzAnbbfl+VW4l2wBWLKEMT7dwLoOiqCR8z13pHieNYh3B71yQdADABHRVgfSrRpS0XkIb6pXLi8DTZgLj8l6B2gy21N0NkcldNPvOUQdZjmOlIePcNt3EW5BRx7LKSpE+hE7bGRULh+AvXrvf3zmMDUwIjlA0HwrTtbju8nDWZa4ViFmVBBGYsNF2MTEkaVlaxzH1I4XiR907wx0jyXuFm8h+9Uw7IcSe7bRnMsBowiOkjTUHf0NOF47a9i+WDIScwViG001UGDBOnl5xSHAcRs2LENNtwINsocy+WVAZEcxI6E1z7I8bw33puOqXM8qXORijCAFVob2hyGuYb1NhzZOI8t0b9FxiEzeM1jNz7K2YZwwzB/AVJkGJVtZkbDfWdNdiNNrWLtF8qFSwMEApKnxbicwMAnbUaia1bFgpnC3CG2BDI3yeCo9Rz86r1+/YayGa4e+tz94Lb3wkAErda2CAp5hmB0BEFVZW+ftZV4GnLdW6Kgvh7LHxKMxOu4zTl9oD2lOVd5GlJ+AdqFxVr7oeMZgQTnEKYLKdC67wSATpMTU67i7qLmN/CsAVQKLLDMWYKiSLzFSWIA0MTtXZFl4WkbqavDLQjwDTNGpOXMIaJOk843k1oeE2dJtgxESSYKiAdTvGk8wAKzgsbmPd3F7u6ATlJzBlBgtbf31Gk7MJXMBImY1C8UR+F2TugMTrJnWZ8UzJneayvDbQmEAzbxOuhXX4MR5Sa7YmYkZp5Zep8MncQJnUGImNKwLoUDvGUGNT7IMCTAJ2j8jQhaYfBW0OZVAYDLOpOWZyyT7OggbCuiDKxmSGMg6mDERtCjQRrqSeepw1+NgY6mFAjNOp/dO3lQXBADL0mJcBt4kCdCJkgcudCF1NYuIGEMAR0In865hTHhYERpmkyI08W++skE71za8yyTqBqREQs6GTyA1Y84MDSCIUXCxYviykd3dDvk1HdMGRSUgRlZnHh0g68zEH/qFjFt4Zl0L3SLYHmzL44/ZALeoFT+O4Mm2t22zZ7MvC6lxAzp5yo0XUTlMSAapPbNQcRauSGR7CshUyCSWzNG2qlIPQkdZ9a0uOVVa2XhQF4/eSUYLEPaINt3QT7KNA13OTVCfVTXoHZvjRbxC7nUe2jIA6n8UrAPoF19d/OzWbVwqcykgjmNK5moZAM7DY+vyKQUmKuidldqP3Ze5W3BAIMgiQRzravP+xnag94LF4iHPgbaHPI+Tfn616BQ0kjVaOCdkzczEUUUV6pkUUUUIRSTtdxb7Ph2ZTDt4E8ife+ABPyp3Xmv/UjG5sQlqdLaT/E+p/2hfnXoCqV05hhLhvsPFVjDLrpP686eYOwTSLDPBqwcPxXlSurLuQSqgDTuneBwB3MCmBfKIFRsJizyAH1qcUBFZ2Zzi7tLVU4YBolWLvmkr3GW53iBi6qxXLuSoz5YBGYHKAV57U6xqxSLF3ipzAwQQQfMVbo35HBwTZsfEYW9Qr9h8QtxFdCGRwGVgZBBEgg8xFbgk6AE+n/Onwqnf9OuK5lu4dyqujs6WphlR2Z4Cn3VJjSQARGkU9xvDe9vBrjE2kWVtgkZrhkSY1Iyx+pnVx5X6k2Cz0+aM2Aubpit3w5hBGuoYHWYgxVN7e4ts62QRlChmO+YliIPkMsx132qzYrGYewFH3ds3ToiqztcIBgrbtDMfCsyBsKrHaoC9lZLdzvMugm14wW0hTc7wakgeHcmeonp3xtkuVRxBkz6Yhm/r8vx4KpW5Zhqsc/n6VYuE4IwIa2Wg9dYMn3ehH1+C/heFyXAt606MSQM1swSASQCAR19dt6tuKs20tAqqgwdQAD0IkeY1FIcTrHOflN9V1hFAw2u2xSbiGPuX7ncWSUVSO8ZdI55F6EiCTyB6kET8PgLODt+FAGOp5yebMd2Y8yTJqD2Ftgrn3zszgnUlWYlSTz8MflyrPai8ddaWtbml4I2G/zTvEaj+PF2OiT8Ux5vNqTFWbsXwv7t3dQUuqFAMHMoLTI6GdPTzqqcJsLcu20b2WcA+Y6fHb416yiAAACANABWy4baaARsHxalZHDGGpmdUSHY2CiNw2ySC1m2xAABZVYwNvEwJ+tSl09nSBAHL5cvhWedAYdf1tVVaBJuJ9m7N5s+U2bn4rLtbJ0jxZIDGBEnWNKVXey9i0cPlUZhibb5o9pl8QkDwjQGDEyN9dbeDUfGYVbqPbaYbmN1OhDDowIBB5ECvbrviOy5b6KBisdh7ilbinwsImVYFiyh7baERlY51IgA61HwPHQHW3cbOHUFLka6sEUXQogElhDiBrDBDGbXBYvFvpks5kLo8yCGygLpOxaX/cddyDPS7ZxDhluW7YtsfFlOvLxAhxBnnodJiYB8XCn8VxhtWw8MfEiwoDGXYW18LESM7CQDMTGulQMLZxSW7buzX2yDOrC0roxUTkyLbVxPtIxEwCCCApT2PtDOxuMxtp4DaLZlcnK5bNvIBUDoweZEVbcJiw6qwKwwBEHrJj102k1DHOyQkNOyOdlCXjdrZyqNzR3VDEkezdytyAnLEsIJ3rbC8SsXrj27TI122FLBWByhiCAXtzElNVnkJBEScZ4vas2s7FXn2VBBzE7RvAidaS9nOI2ruJeJDNYQFST7pZT67pDTJk/hgTLjiNzZL6qz4a6WUMdzuJBynYrpzB0PmDWbzONUgGQNQW59AR+fOuRuZJGYHmMzAETmMekDTcmDOxNQuN4ofZ7pFxQRadgQ0ZTkzL4gZzagiIiQeQrwkDdd2WOI23TIlsrP3aqsufEzFc5MyQFUsZOoQ/GrcV4IBZZ1TLdw7O14c7ltyXd8ogZg3i0HsggDVRTLGLcNwlu9d0ZzZhgBmkLJ8OhK6ZmJhVIESZxi+IXlZXa3m0uLJBGdI8KuCNZ6iYkSTVI1wbKC07HX5/6/C7dTCZjoXt0cN1UsoIrmbdYNlrJW2ZYHQMRBGVUJzD0YEEwSDqJBnZ3itdDknjzNXz6qp5KeTI8arnl8zXpfB+0dy5hkZbZuuJW5GbdYhjlU7ggx1JjY15wCDVq/6c4vJfe0driSP3kMj/aW+VUqukyNzBMMHqyycMOztPHkvRLJaBmAB5gGR8yBW9FFLFrkUUUUIRXjnaS/nxN5v/sYfBTlH0Ar2OvDsQSzMddST8zVqmLRmukWOl3DY0dfsuVNeDtJE0oYNO2n151M4ReZXHg3InXYczv9Ko10YLSWqjQNfnF1fOG2ga6cSxHdoWMwI2IG5A3JAG/M1C4RfuFhKALJ1kbAbxP4oXzmdIqVjLh61kJGkS6rc0rbhVjE3VYMwa6AzXAdp0IMCToY0jciemiy9dWZzOdT+H3tdp12EdY0nWrHiJPM0txCmr8cmmyaRRa7pBah75MkyiNBjwwXCkEDQ76g6RVrwvEb6CFutcUgAh2OYRzS6ZIP70+RXeqtjGYXkIQsctwQIHO2feIH/wC1MXiDr7Vm4o118LR/ChJ+U1ZzSNILDZSSwRvGV3n+VfOC42z3L3MNbAfLBVh4u8GmW4xJJaYkliSNZIglRiOCHERiLt13ZwrIAmUhYWYUywjNoIG2p1JFWwlu5futkVrfeKbYbxKxUBi7ssAhVBaAZk9M1er2xrJgRIA00EjoYgwCOgpzTVD8twLFZqvoIy4Necw6aqm8Xw62cBctot43QTcDNaYeJcsEESoAyg6mNJOlTlZMRbjQNG8xO+kjXrVneD8/60q4vw5Xy5WCuobJsAeeUgRpPPkT5xVSvpjU9q/aUcN6e3DGg5Kq9msZ9mf7LeBUjMLZ0IZAREEGZAZRDa6TrvUntBwx2BZYI9amulq+htX1UsvuuuoPnm28qR2bt7B3GVu9ewdVOW5cKaCVJGYkbkE+nIUlYXiUuAs7mOvcmE0UddFvZQeE4Wb1tG0luZgaSwE7biK9UVpE/oVTMXxDCXUBN60pI94hdOsETUrhWJvWVNtTbuifCS+ijaPMaadNukO24rxWgSjLbRJ6agfRlzACQTe6seLvlFzKhc6eEbxOp+Ak+cRzpF3RBH/a3FBCsYc+0pZlZsqFswJn5DKSIrTjGPxAUQwtmNSsNJ8pG3wqf2Z4ncv22a6FBDEAiRmA5wfOR8KminZL8Bup+KM+Qg3UfCzbYFMLdkKyDxGMqgMgIywAWBGYiRoT7VPLLyAYIkAwdxI2PnW+YVxLEuQGgBRtl3k7yDGg+p8qmUiXcUS6l0XsNbFx8pW4jP3YZTrbIfKdVYHTpcYnlNd49bx7AG9eFkQSLeHAbL+89xSXPSAo05zVwxGIt2ULO0AbnmxPkN2NJOFY04nvWcQheEU8gFG/651TxAvjgMg2uB5ruCpjZO2M6k6qN2XxoOEQz3lwpmadC1wiWGwjxSIjSKxYsmFX7IQIkILhChwCo1ECGIAJ3gkka0o4zgbuEZr2HAZNS1uY13JUwYYjlsTGo1JseCxguWJn3d/yikbJDC8Ss1BP6LK/PC3JmBVL4yxuYpvCwBMDMxbQSu58wZjYz0qz9kcACbre+pVEOkhVVLzRIMy7oD5AHdaS2ME7XUDEkISFmNAWZzJ56kmT1qwd8cOe9UZgVUPBH3eUsQ5B9wqzqxALDwECASHJqmcdovoVnqOJznulIsf397lY7OigRvqIG5JJMwBDSZOw3PWIPaHhdzEqyMwt28hE7kll1IA5CYHnNT8LeAOXaQSOnmB01J08qziXzoRsCOsTpI1GoH1q7JGHtsUyY8sNwqTihaZxccsVuMUd1zeBzEOAxKqpNsLAHvLzkmXxfgNsWXvM7ZUl2YEZiDqAgAykyTA01I1rvjsOj2HthSFKA2ysQWU57ZBzANqoaCRMz1iFjMYjXcjgW7dtbYRHnKGIzNOaAXzSJOvg050plabiYggbEdfZWGZi8tYRbcXVYxTW3vZ7YcJmJBuZMzEqF/wyRHtGZ94CBEng0mrhjeCAozC0ikqSD4VzGJ0DMBmIXQ7b8pqqsDWswiqjkiIa0tt153WKxunnjmD5XBxO1uVuS5LbNNezt/JibLT/AIij4Mcp+jUtIPSt8OxV1MHRgfkRTCaVpYR8kohLhK13Qj1Xt1FR7OMRmKKZKzOhGxg6kQddPn0NSKza+goooooQivDsUmV3X8LMPkSK9xrzDtP2fAvOUuAO73HVGBhjo5UMNFPimTyI0OtdNeG7pZiVJLUNbwxcj0VVuIDvUjh+FUtr+prS3azAHrTThdqDVSpnu02SmkZIHgXVm4JgkBDCZAgbcs0fRj6zrJANML6g1y4bZAXMJJ/XKueLc9aykpL5SbrcUjTlCg4sVXsfiQskkADmaZ4xiOZqucVJZrazALif4QXj5qPhNXqdnVO4hYXWOH4drhF55nKYWAMqsQY65oUTrvTrCa71FW8wUBVnef5fGumGW4CTk6xqNfw89JNSuu5eveGggp5we0gxNokRKXFGsS827gHn4bTn+GrlVHVnaECFQSnjEZk0DZhyJDfDTWQas/DOI5j3d2FugT+zcAgZ0J3GokbqSAd1LX8PmGXhnf1SCsBMhcmB5frka0uqo8TAeETMchrWmOVyhFohX0gnYa6zoeU8qjhMR4wTaMiF1OhgiSMms7xOm2u9MlTULHnC3EBZis5grLnVhC96Y09nKZjbUDcgUhwd5lvPZ7wvky6kMDDAMAQecGmnFMNi1S5cBsFsuoFuSwUN/wDXLbKY5Zar3Z21ciVZZIEE9ZG4y68+ek1Rrms4ZJAuq77cZoGh3Vjx+Fti3qqCZkQBPwqq9lrX3t3IAtvP4RtqvgeFGwlZ5TJ05l5xIXx/5GQiOQ8h5ciD65j5Ck/Yu8FXKdWV3BJ9okMdWkmCRB+NImAiFxvdaWG/DVg4+fDHlvWOwOLJt3LRAi0Vg9Q5cwfRuf7XlUjitkFcw5ilXYuz/wBzdIbRVAI6kmR8sn1plhDhlLVl6vM2rY7rcfT9KvFcgYYz70QeW0R5bV1rjiDA/iT/ANh5j8/gdi5VtUnt5in75bZPgCggeZmSfPlXfsdiPumBGiufqBWO0dsYvFJbsspZEOYnQSDqJ57/AK1qfgcELBa2pkAKW/fy+KJ2G1RYwQKMNO9xp90mpI3ur3yj4dr+Gw7l14oytZLEiBuekb0p7GWH+yWxlygqp15KdVWNDIEb9Kj9rrpGFKDXP7o9+TOT+Iaa6AEzpNPOB3wEgkE1lXAsh06+i2DWudBr+3/0tlwZzgzt0AHTrPQ/A/GpyWREbqJ357zPWeddso3qJir+VT5TVYudJoqYAjBKU4ftDbw5WxezBFP3d0sYyz4VY7ggeHX2gF1JJAdnjuGiRcLDQxb+8O8+ymZhr+dec8RvZ2PnU3hnYlryJdVUCOfFHgIAME6Rm01rb0jHPjBeVnDiTzIWMZm7lZWxqm04S3dZmkAGzcs5spePvLpVdiDmH0MRvwrhV9lzYgMERsy2Se8llOurlmZJ8SkxB5EBTT/D2wmltRoAMzEktH7R1PmTz+JrZBlI1YjnqWJ5CvbapzfSyQYyy9jxWg4twc6WTbtAvqyspveFBvKlgCXG+oNQx2DBuZQ1tWbUS45nQOVtqqtMAESrEgAk+16iASGExOvXedPSueFwiw65LeVjDgKIfSIIiCI61GKl8UrWgHXy9fsoZ6aOeMtf+V5nf7OYtE7xrLZQJkFW06wpJj4VAwaZriL+J1HzIFXTtAzWHuJhibai1aJgk7O+xLSuhUefhGyxXLs/bt4s2broBfS74mUBQ+SLisQDBlfKdNwN5/5+ZxYUrk/47lYJo3aX1BV+tWFWcqgZjJgRJO5PnXSiiuE5RRRRQhFVvtbgMy51E3EV2tjQAv3bJ4iRPvLEayo5TVkrhjLGdY2IIYeoMx6Hb0Jrwi69BI2Xl9nCIVBUiIEekaV2t2gvOkGHxD21Fsgg25tkEQZtkoZH8NZbGOef0pcKSVxtdIH1kMZItqr5wa7pE1rjJmqrwTirI4Bkg9Nx8t6ut22Ligjek9bSvppe3sVocJro52dnkq5jFJqq8dLIwYDRQxBgkZ4AUGNhBbXlV1xeHIpNj8NmBBAI2IIBBHQ1JTyAFaSM3FgVww5rrYwCaDXlznQGQNRyMx0mkmCxLIxtujeBVghc0glgDCySCFB26jlTNOKWxGZsk/jU29enjA1qdzXtPZXcmR+pVh4ZhkRswmYj4DUaDTQkn+I01vHx2D0vLHxV1P0Y0lw18dam9/LWo3F1I+cN/tLVViB/kMJPMJdUx2YVaj/ShjAmsMv6k1Fx+IyWnuGYtqW33gSq78zFalJXODQSVX+2fGwobDIZuNAcjZAYJGbmxGm2gJqFwCwQAKQYYPduF2PiYksYGpOpq2cMwZEfnSnEphbLdLaMvnl4p7h3KTxi4AIiSBVU7NAG5ddt2uMI2gIci6b6qoMnqNtqf9o+IJbRmYwqgkmCYAEnQAk0o7K4NoZ2AU3HZiIAOpgZiN2ygflypVCMsJJWzi7LNVZeID7sEGBFV/spjCuLKAnLcDSJ5qpYGOvhI+JpxxkGMo2H186p9vEtZvLcUCUaR5+XxGlMsHAHisdi02SZr+QK9ZJjfQUm45xAWrJd2YM0hAukMVbL9OsiRsK7HjNgWReLgWzOWTqf2QsyWGxFUDjHE3xN4BQck+BT4ss7k+Z+QEDlTxtmm79guqyrDI7Rm7jt48/ZduyeNt2sRnu6DIwU66MY/MSKt2AXPJO7Ek+u8VXcDwEAhrkBRqTA6VMxPEmuk2MFI5PeEZbfUJMh7keoE69ChxSs/lkBp23PIKXB6KWKOzhooXa18PJS4ysx2SZY6yMqjxEyJkbRNQOzXETkVWnvFVQ4O4aNz69RoaePwpLSkKNSSWb3nY7sx5mq1i/DiLRHv5lIgaiC4PwKn/UaqRZHsLBqtdDq3XuV8w+J8BPSkXGMcVUzzqVhrwCwddpqW/d3RDAVXiLY3XIulFdSyyXyaKiYNbd18r3Dbz6KQs+IkQD0BmJ61d7WN8AVsU0KgWDbcZoBfOYaZKqdPNRzE1/DdnXd2709ys+FimcGTHu7CNcx0q/W7Koqo5UkKAS5UFvOBvtPrWrZK0s0cD4rP4fGWF12Ed/Pw/Ci2eJ27f3dy7mfMR7JG5cRz0DKQPIoOYmfhMUlxA9s5lMwfQkH6isW0tlfBlMTCgRy2APlpW9rUTBG+mo8v5V0CCLhM1m4Yg8xr8OY/XlUjDGRPUk0uxN7Qxy86Y4eCqkTBUEa9RNV2StknLWn4Rr3n2+69OgVd7YcJLhbiOVOqvIzAoxDREiCGUQeUkQQYrr2Q4cqeITAECddzvPXQ/OpfHryFO7zAMWQBSdWLGAFE6nWujcELW0XPkKg5iuskxInSRp01gGuDCXVGc7AfVWBPaDhje6dUVpZtBQANh5k/U1vVxVkUUUUIRRRRQhVDtd2VF5++tsqNtckGDA0YxzGxPT0qlJwlu9yqyuFjMwBgE8vEBOleyVXuKcJykug8PNQPZ8x+z5cvTbieeWOMmMXKXT4ZDNJnOmuvzVfw2ARSSqgE7x+tKZYUldK72LYrlisWF5fGshJM6Q2OqcQUtvgFl1u2FbWKTY/DATXa72hRQcwEdQQPo1JcRx+y5YDvBBInIxEj92YHmYFexRSg7JtC17fiSbiKZLtthzJVteRBI8pzAAfvHrTfC2w4g86r/GMYjm2ouTNwSEyljEnQEHQMoJ8lPSrBw9R1NMJQQwFXswINlE/+MuWZFpwBM5WUuBoBC+MQNNvOtbPG3Qp3y5Sly2SwVskBlzMGiB4Z0JkHTXQm2WbAYQdah8R4NmVlI0YEH0Ig1DHVAOBduFVc5rgWHmrbauZ0Uj3gOo3389NflVX7f8AEioXDKIDeNz1APgA66iT6CscH7TFIs4m3czA6MoL5xMkhVl99YAMaAnmWmPxOHvkZ7DXFg6svdMJ/CLpQwdNa07JGWzX0WXrKeSSMxt0KoPDywObMANNOuvUAkfKrHg8Tcy/+VZIX3GgnPIEBCfEIWZ2JYDnRds4K2Y7i8Z9zvrLfObmX/dSjDcQFu7nOVUZyqW8n3gXMChyhM7SxG06idKVVEIluQQSPNR08ctK1oe069Bp9l14ojXM3jVrZLgiJ0IBUeyJgHUa+p2G3ZPEg20BPiUBWBJJDACQZ1n13351YLFuxcQ90EnSQum8kSPPWq7xbgYzd4gyXB74Ak+TaeJfKlgka4GN2i1MDw9llZ8cudZXXT8vKq9a4Mt05i5A8hv8TtUPg3aPLIfO7IYbu0dxpzBQHfTw6kExTX7fd1bD4RoJnNdfuwZ1ORArN1HiC8okGR6ziwXaNOh0+6VVeHNleOYUfEcET3VI+Zn51izctYZtUa5dKytpFJOXYM3JASIBYgGD0NShxfEsCq4Uq/43NvIn7RhpIG8RrW1i7asghAGZiWe4QJdjux03/IACuzLK9uV2vj6lVv4VPSyB77d1li5w58SRcxZK2z7GH0gCNDcj2zzicomIJE0/wFhEULbUKvkAPWlNjElzJrfFcWRPCDrBOnQCSfQAHWqr4pH2YPLkFOa0WuTYKTxhgPWqVjsJeN0XUy6KVysDsSCYYbHQToZyjbemp48oaW8Stz5jkSOvpTW9YUqGUggiQRzFStY+ntmG6vUNdDMC1huQqg2Nu2o72CCQMygiCTABUknUncE8vWnWGxsbnWueO4eH0YSOlLW4KR/42ZPIGR/paQPhFTExvGuia6EKyLxLzrZeKdDHpp+VVpuFXed64NthbHwEoTBrla4feQH75iJmXAYjykQI+HzqPgR23C44TCdvT3VxscQJMZjTziF5hAAAZlHrrAPxmfkKoHZPGl/aJzKZaVKwZJUEHeB00MdDVmvcYa48WV7xxClyYRfVtp8lBI0nLM1JG40+drBqdPl3+yXVkIcRl2UzGXhbt+MhRIknqeQ6sem5rvw/E4hrY7uyF0jNdYoAI0y2wC3rmyGZ5RXPA2EtE3L1wX70bgeFBzW2JIQHmSSx5mIAb4IXLvicBU5Lzb94n3fKBPpvfw+BsJ1N3He3LvSuQgnRL+B8Jum53+JuLcYf+MIGVFkQ1wBiSWOoBmApMe0ZsdFFNFwAiiiiheoooooQiiiihCKKKKEJXxDhzEE2iAfwnY+nQ/T86894/wAeFlmS6v3g/wAMe23QKo3n5c9q9WqLjsBbuiHUHz5iqM1BG92cDX1VqCqMehF14xiWe9lHcOBnUmWt7Kc3JidwOXP1ptw/AKu1tVkyYUCToJMc4A+VXC/2f7syFDL+yAPmOX1rZUIGlliOoE/lSuYTN7GQ+CYf1GO19fFL8Hw8EbafP86lrgLQ3C+oEflW/e3OVph6jJ9Wii1h2ujNmUKdisvOsctPrVZlLUyHY2VOSsJ+ErXwJtNc34iC2VeemvWui8JJ9p3H8K/3muOI4BsVd215eAjzmGn4VZZhcm7gqclRKVniGGtspV1VgRqIkfI0k/8AijkLorsoYDKrgTqJCq7ZRpyEfCrUnC007zO+27AT65QK6XbZJAhQg9kaCPKR5foxrZpcOe3/ALDp0Cu/zA1vZ39FWrPBMtrvMTct2UkKCLZJJMQWJPhG4jX96K0x/CWgm3cW8W2K22AHmfHDDyEfyq1Y3Ai/bezcJykgqw08/QkEekHqKridhHB8OJgeSkfQN/OmL6FjmdggH5glL34jVxy3DS9v/oDVQ8Hw7EoF++sJkDgE22JhypInvdpUQBA3rLcOskRicVcunn946A/woQseUfOpN3sXc2OKHxDD6Zq0w3YmSe8ukj9kR9W/p8eVVv6Y4m7pR4DX0UT8Sqy7sQ2v1I9yudziuHsgJaVYGgAG3oBoKj2+1RB1BI+H86ep2Ow40OY6zM67RG8b67V0XshhojK09cxn+n0qZmF0tu2SfBVJZMSe64LR4n2VVxHF7+JYW0U67Iu59aWm1dFzu8j94PcAJYfACa9J4XwW1YJNsGSIJJkx0HTbl5VNt2FEkAS2rEADN65QJqyIKePsxt0UP8GolGaaTtc+lvovP04VjiIFp46SgPxBM0vFjEW2LKtxGGmbOEJBJGhkZllTtppXpOPw7soW0wtkHfKDyIgdN5nqB51FOAxG4xGvi93qrKsA7AZs0ayVWu2ZGfC0KU4Y13xPcfEeyqNjiDXCtvE4U3gFksoZruXkVYPCjNuBG+wNSuFYXFSy2rOS0SWHf5lCA7Cd9o61ZVwF2Vm7mhpaR7XhUQNCV8QY/wAUTzqbgrLKgFxg7iZYLlnUxpy00+FeSBkjcrmghSR0RY8Pa86d1/O2yULw65AzqubqklT+7OsetZHCm/A3+3+tPI/5o7sdB8qWnC4r3ufp7Jq2plAtdJbfCC2mU6ea/wAmqJxbhZRdRp5c6sjgEagR51qySp3yka5joQepJnnvXhwtgHZJv4eykZWSA3Oy8mRL6m4q25VrkkhsjZWy5oIB8QEqCY9kVbeF4+22W0uHu23EBbeTwwFU+F0m3AzRv7p2in1ngILSAAvWDqfKdT+tTTvB4JLY8I15nmf10qJtE+U2kFgOnNTVFTG+1rlLk4W4tsRlFyPAIkKeRM+0R8p+dTOGJfGY3mBM6ARAHWYB+HQCp1FNIomRNysFgl5N0UUUVIvEUUUUIRRRRQhFFFFCEUUUUIRRRRQhFcXw6nXY9Rp8+R+M12ooQoN/CsfwuPOQf6H6Vway8yEYeWZI+U/zprRQhLAtznbP+pf61nu3/A3zX+6mVFCEuyP/AJbfNP7q5thiTJtEnrKz881NaKEJYbL/AIX3nQpv/q1rDWHJko06c05fxU0ooQlZsNvkb5oPoG1rfI/4G+a/3UxooQl2R/wN81/uoyP+Bvmv91MaKEJaEf8AA3zX+6slH/A3zX+6mNFCEuCP+Bvmv91YyP8Agb5r/dTKihCXZH/y2+af3Vju35o3zX+6mVFCEuKv/lt81/urHdv+Bvmn91MqKEJdawbZYbKY6jMxj1MA/MVH4NimunxWGSAPE5M6z7IKgcuUbiY2pzRQhFFFFCFGxjNNtVYrmeCRExkdtJBG6io2EdnDHNeXKxEMtsTABkeDUEHf+c12x7gNaJMAOST5C1dqv8JxrjDt9qVrTu/ehWzDKLlx7ipKAkQqwehmfMQmgxT9MT/ot/2/CtnxDggRiDMahbWkxv4fP6GuFzjikEHu9IOly4OpH+F+zt/WuWCx6280FCSATNy4dBA0m1p7Q2oQu5xtyJyYr/Ra6T0+HrTC3mFxQXZgUYwwXQgpHsgfiNI0xOHLE3LpWNAEe7uZnXKse0Igf8NcDdRnTu2LBUuCWLEzmtHUtqd6EJlRRRQhFFFFCEUUUUIRRRRQhFFFFCEUUUUIRRRRQhFFFFCEUUUUIRRRRQhFFFFCEUUUUIRRRRQhFFFFCEUUUUIRRRRQhFFFFCFxxOHDxqQVMgjcGCOfkTXP7Gf82581/trFFCEfYz/m3P8Ab/bR9jP+bc/2/wBtFFCFn7Gf825/t/trazhYbMXdiAQM0aAkE7AfhFFFCFIooooQv//Z'
+        };
+    
+        // Define as definições de texto para cada tópico (Conteúdo do mapa a ser exibido)
+        const definicoes = {
+            'rochas': {
+                titulo: "O Ciclo das Rochas", 
+                texto: "A crosta terrestre é composta por diferentes tipos de formações, como crátons, bacias sedimentares e dobramentos modernos — cada uma representando uma etapa importante na evolução geológica do planeta. Os crátons são áreas antigas e estáveis, que servem de base para os continentes. As bacias sedimentares acumulam materiais que, com o tempo, se compactam e originam novas rochas. Já os dobramentos modernos surgem do encontro e compressão das placas tectônicas, dando origem a cadeias de montanhas."
+            },
+            'vulcoes': {
+                titulo: "Distribuição e Impacto dos Vulcões", 
+                texto: "A maioria dos vulcões localiza-se nos limites das placas tectônicas (Círculo de Fogo do Pacífico). Seu estudo é crucial para a previsão de erupções, que, embora destrutivas, são essenciais para a formação de novas terras e a fertilização do solo."
+            },
+            'clima': {
+                titulo: "Clima e Geologia", 
+                texto: "A geologia influencia o clima através da liberação de gases vulcânicos, que podem aquecer o planeta, e pela alteração das rochas (intemperismo).O Brasil possui grande variedade de climas por causa de sua extensão territorial e relevo. Predominam o clima tropical e o equatorial, com altas temperaturas e muita chuva. No sul, o clima subtropical tem estações bem definidas e invernos frios, enquanto o semiárido do Nordeste é quente e seco, com longos períodos de estiagem."
+            },
+            'falhas': {
+                titulo: "As Falhas Geológicas", 
+                texto: "Falhas são fraturas na crosta terrestre onde houve deslocamento de blocos rochosos. Elas são a principal causa de terremotos. O monitoramento das falhas ativas, como a Falha de Santo André na Califórnia, é vital para a prevenção de desastres."
+            }
+        };
+    
+        // Garante que os pontos e a área de definição estejam ocultos ao iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            pontos.forEach(p => p.style.display = 'none');
+            definicaoDiv.style.display = 'none';
+        });
+    
+    
+        function mostrarPontos(tipo) {
+            
+            // 0. Altera a imagem do mapa para o tema (NOVO)
+            if (mapaImagem && imagensMapa[tipo]) {
+                mapaImagem.src = imagensMapa[tipo];
+                mapaImagem.alt = `Mapa temático: ${tipo.toUpperCase()}`;
+            }
+
+            // 1. Ocultar a definição anterior (com transição)
+            definicaoDiv.classList.remove('mostrando');
+            definicaoDiv.style.display = 'none';
+            
+            // 2. Lógica de show/hide dos PONTOS
+            pontos.forEach(ponto => {
+                ponto.style.display = 'none'; // Esconde todos
+                
+                if (ponto.classList.contains(tipo)) {
+                    ponto.style.display = 'block'; // Mostra apenas os do tipo selecionado
+                }
+            });
+            
+            // 3. Preencher e exibir a DEFINIÇÃO
+            const dados = definicoes[tipo];
+    
+            if (dados) {
+                definicaoDiv.innerHTML = `<h2>${dados.titulo}</h2><p>${dados.texto}</p>`;
+                definicaoDiv.style.display = 'block';
+    
+                // Força um pequeno atraso para garantir a transição de opacidade
+                setTimeout(() => {
+                    definicaoDiv.classList.add('mostrando');
+                }, 50); 
+                
+                // Rola a página para que o usuário veja a definição
+                setTimeout(() => {
+                    definicaoDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
+        
+        // ===================================
+        // 3. LÓGICA DE SIMULAÇÃO DE BUSCA
+        // ===================================
+        
+        const searchInterface = document.getElementById('search-interface');
+        const resultArea = document.getElementById('result-area');
+        const resultQueryElement = document.getElementById('result-query');
+        const resultContentElement = document.getElementById('result-content');
+        const backSearchButtonTop = document.getElementById('back-search-button-top');
+        const backSearchButtonBottom = document.getElementById('back-search-button-bottom');
+
+        // Respostas simuladas
+        const responses = {
+            "minerais": "Minerais são substâncias inorgânicas, naturais e homogêneas com uma composição química definida e estrutura cristalina ordenada. Eles são os blocos construtores das rochas e são classificados com base em sua composição química, como silicatos, óxidos e sulfetos. Exemplos incluem quartzo, feldspato e calcita.",
+            "formacao de rochas": "A formação de rochas ocorre através de três processos principais, dando origem a três tipos: Rochas Ígneas (formadas pelo resfriamento do magma), Rochas Sedimentares (formadas pelo acúmulo e cimentação de sedimentos) e Rochas Metamórficas (formadas pela transformação de rochas existentes sob calor e pressão).",
+            "diamante": "O diamante é o alótropo mais estável do carbono e a substância natural mais dura conhecida. Ele se forma no manto da Terra, a profundidades superiores a 150 km, sob temperaturas acima de 1000°C e pressões altíssimas. É trazido à superfície por erupções raras de rochas vulcânicas como o kimberlito.",
+            
+            // Respostas da rodada anterior
+            "qual a geologia de minas gerais": "Minas Gerais possui uma geologia rica e complexa, marcada por grandes reservas de minério de ferro (Quadrilátero Ferrífero) e ouro. A região é dominada por rochas cristalinas antigas (Cráton do São Francisco), cinturões de dobramento e depósitos sedimentares, o que explica sua vasta diversidade mineral e histórica mineração.",
+            "ciclo do ouro": "O ciclo do ouro envolve a formação primária (veios hidrotermais em rochas), a intemperização dessas rochas e o transporte do ouro para depósitos secundários (aluviais) em rios. A mineração pode ocorrer tanto nas jazidas primárias (rochas) quanto nas aluviais (sedimentos dos rios).",
+            "maiores desastres ambientais no brasil": "No Brasil, alguns dos maiores desastres ambientais recentes estão ligados a rompimentos de barragens de rejeitos de mineração, como os de Mariana (2015) e Brumadinho (2019), ambos em Minas Gerais. Esses eventos causaram perdas humanas trágicas e danos ambientais catastróficos em rios e ecossistemas.",
+            "o que e subducção": "Subducção é o processo geológico em que uma placa tectônica (geralmente a mais densa, como a oceânica) desliza e mergulha sob outra placa (geralmente a continental ou uma oceânica menos densa). Este processo é o motor por trás da formação de vulcões, cadeias de montanhas e das fossas oceânicas mais profundas.",
+
+            // NOVAS RESPOSTAS ADICIONADAS AQUI (Referentes à imagem)
+            "o que é geologia": "Geologia é a ciência natural que estuda a Terra, incluindo sua composição, estrutura física, história (passada e presente), e os processos que a moldaram e a continuam moldando. O objetivo principal é entender a evolução do planeta.",
+            "o que é geologia estuda": "A Geologia estuda rochas, minerais, solos, terremotos, vulcões, a estrutura interna da Terra, a formação de montanhas e bacias sedimentares, a história do clima e a distribuição de recursos naturais.",
+            "o que é geologia ambiental": "A Geologia Ambiental aplica princípios e conceitos geológicos para resolver problemas e questões ambientais, como o gerenciamento de resíduos, a qualidade da água subterrânea, a mitigação de riscos geológicos (deslizamentos, inundações) e a busca por fontes de energia sustentável.",
+            "o que é geologia forense": "Geologia Forense é a aplicação de técnicas e conhecimentos geológicos em investigações criminais. Ela ajuda a analisar evidências como solos, minerais, rochas e materiais de construção encontrados em cenas de crime, vítimas ou suspeitos, auxiliando na determinação de localização e associação de pessoas ou objetos.",
+            "o que é geologia e geomorfologia": "Geologia estuda a história, composição e estrutura interna da Terra. Geomorfologia é o ramo que estuda as formas da superfície terrestre (o relevo), seus processos de formação e a evolução das paisagens. Ambas estão intimamente ligadas, pois a estrutura geológica influencia diretamente o relevo geomorfológico.",
+            "o que é geologia na geografia": "Na Geografia, a Geologia é fundamental para a análise da paisagem física (Geografia Física). Ela fornece a base para entender a formação do relevo, a distribuição de recursos hídricos e minerais, e a vulnerabilidade do território a fenômenos naturais, sendo um componente essencial do estudo do espaço geográfico.",
+            "o que é geologia resumo": "Geologia é a ciência da Terra. Estuda a composição, estrutura e evolução do planeta ao longo do tempo, focando em rochas, minerais, processos internos (tectonismo, vulcanismo) e externos (erosão, sedimentação), e a busca por recursos naturais.",
+            "o que é geologia estrutural": "Geologia Estrutural é o ramo que estuda a arquitetura tridimensional das rochas e as deformações que ocorreram na crosta terrestre. Ela analisa falhas, dobras, fraturas, e outras estruturas que resultam de tensões tectônicas, sendo crucial para a prospecção de minérios e petróleo."
+            // FIM DAS NOVAS RESPOSTAS
+        };
+        
+        function voltarParaBusca() {
+            // Oculta a área de resultados
+            resultArea.classList.add('hidden');
+
+            // Exibe a interface de busca
+            searchInterface.classList.remove('hidden');
+        }
+        
+        // Event listeners da Busca
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.suggestion-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const query = item.getAttribute('data-query');
+                    const responseText = responses[query] || "Resposta não encontrada para esta pesquisa. Tente outro termo.";
+
+                    // Oculta a interface de busca
+                    searchInterface.classList.add('hidden');
+
+                    // Preenche e exibe a área de resultados
+                    resultQueryElement.textContent = `Pesquisa: \"${query}\"`;
+                    resultContentElement.textContent = responseText;
+                    resultArea.classList.remove('hidden');
+                    
+                    // Força o scroll do resultado para o topo
+                    resultArea.scrollTo({ top: 0, behavior: 'instant' });
+                });
+            });
+            
+            backSearchButtonTop.addEventListener('click', voltarParaBusca);
+            backSearchButtonBottom.addEventListener('click', voltarParaBusca);
+        });
+    </script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>
